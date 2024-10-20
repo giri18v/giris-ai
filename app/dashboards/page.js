@@ -245,7 +245,7 @@ const Overview = () => {
 
         {/* Contact Us Section */}
         <div className="text-center mt-8">
-          <p className="mb-4">Have any questions, feedback or need support? We&apos;d love to hear from you!</p>
+        <p className="mb-4">Have any questions, feedback or need support? We&apos;d love to hear from you!</p>
           <button className="bg-purple-500 text-white px-6 py-3 rounded-full hover:bg-purple-600">
             Contact us
           </button>

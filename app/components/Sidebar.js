@@ -19,9 +19,9 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       className={`fixed left-0 top-0 h-screen bg-white shadow-md transition-all duration-300 ease-in-out ${isOpen ? 'w-64' : 'w-0 -left-16'}`}
     >
       <div className="p-4">
-        <h1 className={`text-2xl font-bold text-purple-600 mb-8 whitespace-nowrap overflow-hidden ${isOpen ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}>
-          GIRI&apos;s AI
-        </h1>
+      <h1 className={`text-2xl font-bold text-purple-600 mb-8 whitespace-nowrap overflow-hidden ${isOpen ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}>
+  GIRI&apos;s AI
+</h1>
       </div>
       <nav>
         {navItems.map((item) => (
