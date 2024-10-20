@@ -27,7 +27,7 @@ const Layout = ({ children }) => {
               </svg>
             )}
           </button>
-          <h1 className="text-xl font-semibold">GIRI's AI Dashboard</h1>
+          <h1 className="text-xl font-semibold">GIRI&apos;s AI Dashboard</h1>
         </header>
         <main className="p-8 bg-gray-50 min-h-screen">
           {children}

@@ -20,7 +20,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     >
       <div className="p-4">
         <h1 className={`text-2xl font-bold text-purple-600 mb-8 whitespace-nowrap overflow-hidden ${isOpen ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}>
-          GIRI's AI
+          GIRI&apos;s AI
         </h1>
       </div>
       <nav>
