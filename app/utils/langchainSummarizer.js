@@ -18,7 +18,6 @@ const promptTemplate = PromptTemplate.fromTemplate(
   "Summarize the GitHub repository from this README file content:\n\n{readmeContent}\n\n{format_instructions}"
 );
 
-// Initialize the language model
 const model = new ChatOpenAI({ temperature: 0.7 });
 
 // Create the chain
