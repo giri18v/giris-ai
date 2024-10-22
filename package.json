@@ -12,6 +12,7 @@
     "@langchain/core": "^0.1.0",
     "@langchain/openai": "^0.0.1",
     "@supabase/supabase-js": "^2.39.0",
+    "langchain": "^0.0.200",
     "next": "14.2.15",
     "next-auth": "^4.22.1",
     "react": "^18",
