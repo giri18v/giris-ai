@@ -1,21 +1,29 @@
 'use client'
 
-import { signIn } from "next-auth/react"
+import { signIn } from "next-auth/react";
+import { useState } from 'react';
 
-const LoginButton = ({ onSignIn }) => {
-  const handleClick = async () => {
-    await signIn('google');
-    if (onSignIn) {
-      onSignIn();
+const LoginButton = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSignIn = async () => {
+    setIsLoading(true);
+    try {
+      await signIn('google', { callbackUrl: '/dashboards' });
+    } catch (error) {
+      console.error('Error signing in:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <button
-      onClick={handleClick}
-      className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center bg-white text-black hover:bg-gray-100 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
+      onClick={handleSignIn}
+      disabled={isLoading}
+      className={`rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center bg-blue-500 text-white hover:bg-blue-600 dark:hover:bg-blue-400 text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
     >
-      Sign in with Google
+      {isLoading ? 'Signing In...' : 'Sign In with Google'}
     </button>
   );
 };

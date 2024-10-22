@@ -13,10 +13,6 @@ const ClientHome = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [imageError, setImageError] = useState(false);
 
-  const handleSignIn = async () => {
-    router.push('/dashboards');
-  };
-
   const handleSignOut = async () => {
     setIsLoading(true);
     try {
@@ -42,9 +38,7 @@ const ClientHome = () => {
         Manage API Keys
       </Link>
       {!session ? (
-        <div className="flex items-center gap-2">
-          <LoginButton onSignIn={handleSignIn} />
-        </div>
+        <LoginButton />
       ) : (
         <div className="flex gap-4 items-center">
           {session.user.image && !imageError ? (
