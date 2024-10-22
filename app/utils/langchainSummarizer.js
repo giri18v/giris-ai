@@ -1,4 +1,4 @@
-import { ChatOpenAI } from "@langchain/openai";
+import { OpenAI } from "@langchain/openai";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { StructuredOutputParser } from "langchain/output_parsers";
 import { RunnableSequence } from "@langchain/core/runnables";
@@ -18,7 +18,7 @@ const promptTemplate = PromptTemplate.fromTemplate(
   "Summarize the GitHub repository from this README file content:\n\n{readmeContent}\n\n{format_instructions}"
 );
 
-const model = new ChatOpenAI({ temperature: 0.7 });
+const model = new OpenAI({ temperature: 0.7 });
 
 // Create the chain
 const chain = RunnableSequence.from([
@@ -38,7 +38,7 @@ export async function summarizeRepository(readmeContent) {
 }
 
 export async function summarizeGitHubRepo(githubUrl, apiKey) {
-  const model = new ChatOpenAI({
+  const model = new OpenAI({
     openAIApiKey: apiKey,
     temperature: 0,
     modelName: "gpt-3.5-turbo",
