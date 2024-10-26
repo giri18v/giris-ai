@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 import { supabase } from '../../lib/supabaseClient'
 import CreateKeyModal from '../components/CreateKeyModal'
 import EditKeyModal from '../components/EditKeyModal'
@@ -9,6 +11,8 @@ import Notification from '../components/Notification'
 import Layout from '../components/Layout'
 
 const Overview = () => {
+  const { data: session, status } = useSession()
+  const router = useRouter()
   const [apiKeys, setApiKeys] = useState([])
   const [currentPlan, setCurrentPlan] = useState({
     name: 'Gulla Giri',
@@ -26,9 +30,13 @@ const Overview = () => {
   const [copiedKey, setCopiedKey] = useState(null)
 
   useEffect(() => {
-    fetchApiKeys()
-    fetchCurrentPlan()
-  }, [])
+    if (status === 'unauthenticated') {
+      router.push('/api/auth/signin')
+    } else if (status === 'authenticated') {
+      fetchApiKeys()
+      fetchCurrentPlan()
+    }
+  }, [status, router])
 
   const fetchApiKeys = async () => {
     setIsLoading(true)
@@ -137,8 +145,12 @@ const Overview = () => {
     })
   }
 
-  if (isLoading) {
+  if (status === 'loading') {
     return <Layout><div className="flex items-center justify-center h-screen">Loading...</div></Layout>
+  }
+
+  if (!session) {
+    return null
   }
 
   if (error) {
@@ -287,5 +299,4 @@ const Overview = () => {
     </Layout>
   )
 }
-
 export default Overview

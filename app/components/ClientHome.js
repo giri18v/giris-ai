@@ -1,9 +1,8 @@
 'use client'
 
 import { useRouter } from 'next/navigation';
-import { signOut, useSession } from 'next-auth/react';
+import { signOut, useSession, signIn } from 'next-auth/react';
 import LoginButton from "./LoginButton";
-import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
 
@@ -25,18 +24,22 @@ const ClientHome = () => {
     }
   };
 
+  const handleManageAPIKeys = () => {
+    router.push('/dashboards');
+  };
+
   if (status === 'loading') {
     return <div>Loading...</div>;
   }
 
   return (
     <div className="flex gap-4 items-center flex-col sm:flex-row">
-      <Link
-        href="/dashboards"
+      <button
+        onClick={handleManageAPIKeys}
         className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center bg-blue-500 text-white hover:bg-blue-600 dark:hover:bg-blue-400 text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
       >
         Manage API Keys
-      </Link>
+      </button>
       {!session ? (
         <LoginButton />
       ) : (

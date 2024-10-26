@@ -3,13 +3,13 @@
 import { signIn } from "next-auth/react";
 import { useState } from 'react';
 
-const LoginButton = () => {
+const LoginButton = ({ callbackUrl = '/dashboards' }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSignIn = async () => {
     setIsLoading(true);
     try {
-      await signIn('google', { callbackUrl: '/dashboards' });
+      await signIn('google', { callbackUrl });
     } catch (error) {
       console.error('Error signing in:', error);
     } finally {
