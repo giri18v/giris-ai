@@ -159,34 +159,34 @@ const Overview = () => {
 
   return (
     <Layout>
-      <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Overview</h1>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header Section */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+          <h1 className="text-2xl sm:text-3xl font-bold">Overview</h1>
           <div className="flex items-center space-x-4">
-            <span className="text-green-500 flex items-center">
+            <span className="text-green-500 flex items-center text-sm sm:text-base">
               <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
               Operational
             </span>
-            {/* Add GitHub, Twitter, and Email icons here */}
           </div>
         </div>
         
         {/* Current Plan Card */}
-        <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg p-6 mb-8 text-white">
-          <div className="flex justify-between items-start mb-4">
+        <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg p-4 sm:p-6 mb-8 text-white">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
             <div>
-              <p className="text-sm mb-2">CURRENT PLAN</p>
-              <h2 className="text-4xl font-bold">{currentPlan.name}</h2>
+              <p className="text-sm opacity-90 mb-1">CURRENT PLAN</p>
+              <h2 className="text-2xl sm:text-4xl font-bold">{currentPlan.name}</h2>
             </div>
-            <button className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded">
+            <button className="w-full sm:w-auto bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg transition-colors duration-200">
               Manage Plan
             </button>
           </div>
           <div>
-            <p className="text-sm mb-2">API Limit</p>
+            <p className="text-sm opacity-90 mb-2">API Limit</p>
             <div className="bg-white/20 rounded-full h-2 mb-2">
               <div 
-                className="bg-white rounded-full h-2" 
+                className="bg-white rounded-full h-2 transition-all duration-300" 
                 style={{width: `${(currentPlan.usedRequests / currentPlan.apiLimit) * 100}%`}}
               ></div>
             </div>
@@ -195,35 +195,31 @@ const Overview = () => {
         </div>
 
         {/* API Keys Section */}
-        <div className="bg-white rounded-lg p-6 mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-xl font-semibold">API Keys</h3>
+        <div className="bg-white rounded-lg p-4 sm:p-6 mb-8 shadow-sm">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+            <h3 className="text-lg sm:text-xl font-semibold">API Keys</h3>
             <button 
               onClick={() => setIsCreateModalOpen(true)}
-              className="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600"
+              className="w-full sm:w-auto bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 
+                transition-colors duration-200 text-sm sm:text-base"
             >
               + Create New Key
             </button>
           </div>
-          <table className="w-full">
-            <thead>
-              <tr className="text-left text-gray-500 text-sm">
-                <th className="pb-2">NAME</th>
-                <th className="pb-2">USAGE</th>
-                <th className="pb-2">KEY</th>
-                <th className="pb-2">OPTIONS</th>
-              </tr>
-            </thead>
-            <tbody>
-              {apiKeys.map((key) => (
-                <tr key={key.id} className="border-t">
-                  <td className="py-4">{key.name}</td>
-                  <td className="py-4">{key.usage}</td>
-                  <td className="py-4">{key.key}</td>
-                  <td className="py-4 flex space-x-2">
+          
+          {/* Mobile View: Cards */}
+          <div className="block sm:hidden space-y-4">
+            {apiKeys.map((key) => (
+              <div key={key.id} className="border rounded-lg p-4">
+                <div className="flex justify-between items-start mb-3">
+                  <div>
+                    <h4 className="font-medium">{key.name}</h4>
+                    <p className="text-sm text-gray-500">Usage: {key.usage}</p>
+                  </div>
+                  <div className="flex space-x-2">
                     <button 
                       onClick={() => handleCopyKey(key.key)} 
-                      className={`text-gray-600 hover:text-gray-800 ${copiedKey === key.key ? 'text-green-500' : ''}`}
+                      className={`p-2 rounded-lg hover:bg-gray-100 ${copiedKey === key.key ? 'text-green-500' : 'text-gray-600'}`}
                       aria-label="Copy"
                     >
                       {copiedKey === key.key ? '✅' : '📋'}
@@ -233,7 +229,7 @@ const Overview = () => {
                         setEditingKey(key)
                         setIsEditModalOpen(true)
                       }} 
-                      className="text-gray-600 hover:text-gray-800"
+                      className="p-2 rounded-lg hover:bg-gray-100 text-gray-600"
                       aria-label="Edit"
                     >
                       ✏️
@@ -243,26 +239,85 @@ const Overview = () => {
                         setDeletingKey(key)
                         setIsDeleteModalOpen(true)
                       }} 
-                      className="text-gray-600 hover:text-gray-800"
+                      className="p-2 rounded-lg hover:bg-gray-100 text-gray-600"
                       aria-label="Delete"
                     >
                       🗑️
                     </button>
-                  </td>
+                  </div>
+                </div>
+                <p className="text-sm font-mono bg-gray-50 p-2 rounded break-all">{key.key}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop View: Table */}
+          <div className="hidden sm:block overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="text-left text-gray-500 text-sm">
+                  <th className="pb-2 pr-4">NAME</th>
+                  <th className="pb-2 pr-4">USAGE</th>
+                  <th className="pb-2 pr-4">KEY</th>
+                  <th className="pb-2">OPTIONS</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {apiKeys.map((key) => (
+                  <tr key={key.id} className="border-t">
+                    <td className="py-4 pr-4">{key.name}</td>
+                    <td className="py-4 pr-4">{key.usage}</td>
+                    <td className="py-4 pr-4 font-mono text-sm">{key.key}</td>
+                    <td className="py-4">
+                      <div className="flex space-x-2">
+                        <button 
+                          onClick={() => handleCopyKey(key.key)} 
+                          className={`p-2 rounded-lg hover:bg-gray-100 ${copiedKey === key.key ? 'text-green-500' : 'text-gray-600'}`}
+                          aria-label="Copy"
+                        >
+                          {copiedKey === key.key ? '✅' : '📋'}
+                        </button>
+                        <button 
+                          onClick={() => {
+                            setEditingKey(key)
+                            setIsEditModalOpen(true)
+                          }} 
+                          className="p-2 rounded-lg hover:bg-gray-100 text-gray-600"
+                          aria-label="Edit"
+                        >
+                          ✏️
+                        </button>
+                        <button 
+                          onClick={() => {
+                            setDeletingKey(key)
+                            setIsDeleteModalOpen(true)
+                          }} 
+                          className="p-2 rounded-lg hover:bg-gray-100 text-gray-600"
+                          aria-label="Delete"
+                        >
+                          🗑️
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {/* Contact Us Section */}
-        <div className="text-center mt-8">
-        <p className="mb-4">Have any questions, feedback or need support? We&apos;d love to hear from you!</p>
-          <button className="bg-purple-500 text-white px-6 py-3 rounded-full hover:bg-purple-600">
+        <div className="text-center mt-8 space-y-4">
+          <p className="text-sm sm:text-base text-gray-600">
+            Have any questions, feedback or need support? We&apos;d love to hear from you!
+          </p>
+          <button className="w-full sm:w-auto bg-purple-500 text-white px-6 py-3 rounded-lg hover:bg-purple-600 
+            transition-colors duration-200">
             Contact us
           </button>
         </div>
 
+        {/* Modals */}
         <CreateKeyModal
           isOpen={isCreateModalOpen}
           onClose={() => setIsCreateModalOpen(false)}
@@ -299,4 +354,5 @@ const Overview = () => {
     </Layout>
   )
 }
+
 export default Overview
