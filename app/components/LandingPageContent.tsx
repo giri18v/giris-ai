@@ -162,95 +162,103 @@ export default function LandingPageContent() {
                 <h3 className="text-2xl font-semibold mb-2">Free Tier</h3>
                 <p className="text-gray-600 mb-4">For individual developers</p>
                 <p className="text-4xl font-bold mb-6">$0/mo</p>
-                <ul className="mb-6 text-gray-600">
-                  <li className="mb-2 flex items-center">
+                <ul className="mb-6 text-gray-600 space-y-3">
+                  <li className="flex items-center">
                     <span className="mr-2">•</span>
                     5 repositories
                   </li>
-                  <li className="mb-2 flex items-center">
+                  <li className="flex items-center">
                     <span className="mr-2">•</span>
                     Basic insights
                   </li>
-                  <li className="mb-2 flex items-center">
+                  <li className="flex items-center">
                     <span className="mr-2">•</span>
                     Daily updates
                   </li>
                 </ul>
                 <Link 
                   href="/signup" 
-                  className="block text-center bg-gradient-to-r from-gray-600 to-gray-800 text-white px-6 py-3 rounded-lg
-                    hover:shadow-lg hover:scale-105 transition-all duration-200"
+                  className="block text-center bg-black text-white px-6 py-3 rounded-lg
+                    hover:bg-gray-800 transition-colors duration-200"
                 >
                   Get Started
                 </Link>
               </div>
 
               {/* Pro Tier */}
-              <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 
-                transform scale-105 border-2 border-blue-100 relative">
-                <div className="absolute top-0 right-0 bg-blue-600 text-white px-3 py-1 rounded-bl-lg rounded-tr-lg text-sm">
-                  Popular
+              <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg transition-shadow duration-300 relative">
+                <div className="absolute right-4 top-4">
+                  <span className="bg-[#F5B014] text-black px-3 py-1 rounded-md text-sm font-medium">
+                    Coming Soon
+                  </span>
                 </div>
-                <h3 className="text-2xl font-semibold mb-2">Pro</h3>
-                <p className="text-gray-600 mb-4">For growing teams</p>
-                <p className="text-4xl font-bold mb-6">$29/mo</p>
-                <ul className="mb-6 text-gray-600">
-                  <li className="mb-2 flex items-center">
-                    <span className="mr-2">•</span>
-                    Unlimited repositories
-                  </li>
-                  <li className="mb-2 flex items-center">
-                    <span className="mr-2">•</span>
-                    Advanced insights
-                  </li>
-                  <li className="mb-2 flex items-center">
-                    <span className="mr-2">•</span>
-                    Real-time updates
-                  </li>
-                  <li className="mb-2 flex items-center">
-                    <span className="mr-2">•</span>
-                    Priority support
-                  </li>
-                </ul>
-                <Link 
-                  href="/signup" 
-                  className="block text-center bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-lg
-                    hover:shadow-lg hover:scale-105 transition-all duration-200"
-                >
-                  Upgrade to Pro
-                </Link>
+                <div className="opacity-50">
+                  <h3 className="text-2xl font-semibold mb-2">Pro</h3>
+                  <p className="text-gray-600 mb-4">For growing teams</p>
+                  <p className="text-4xl font-bold mb-6">$29/mo</p>
+                  <ul className="mb-6 text-gray-600 space-y-3">
+                    <li className="flex items-center">
+                      <span className="mr-2">•</span>
+                      Unlimited repositories
+                    </li>
+                    <li className="flex items-center">
+                      <span className="mr-2">•</span>
+                      Advanced insights
+                    </li>
+                    <li className="flex items-center">
+                      <span className="mr-2">•</span>
+                      Real-time updates
+                    </li>
+                    <li className="flex items-center">
+                      <span className="mr-2">•</span>
+                      Priority support
+                    </li>
+                  </ul>
+                  <div 
+                    className="block text-center bg-gray-400 text-white px-6 py-3 rounded-lg
+                      cursor-not-allowed"
+                  >
+                    Upgrade to Pro
+                  </div>
+                </div>
               </div>
 
               {/* Enterprise Tier */}
-              <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <h3 className="text-2xl font-semibold mb-2">Enterprise</h3>
-                <p className="text-gray-600 mb-4">For large organizations</p>
-                <p className="text-4xl font-bold mb-6">Custom</p>
-                <ul className="mb-6 text-gray-600">
-                  <li className="mb-2 flex items-center">
-                    <span className="mr-2">•</span>
-                    Custom integrations
-                  </li>
-                  <li className="mb-2 flex items-center">
-                    <span className="mr-2">•</span>
-                    Dedicated support
-                  </li>
-                  <li className="mb-2 flex items-center">
-                    <span className="mr-2">•</span>
-                    On-premise options
-                  </li>
-                  <li className="mb-2 flex items-center">
-                    <span className="mr-2">•</span>
-                    Advanced security
-                  </li>
-                </ul>
-                <Link 
-                  href="/contact" 
-                  className="block text-center bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-lg
-                    hover:shadow-lg hover:scale-105 transition-all duration-200"
-                >
-                  Contact Sales
-                </Link>
+              <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg transition-shadow duration-300 relative">
+                <div className="absolute right-4 top-4">
+                  <span className="bg-[#F5B014] text-black px-3 py-1 rounded-md text-sm font-medium">
+                    Coming Soon
+                  </span>
+                </div>
+                <div className="opacity-50">
+                  <h3 className="text-2xl font-semibold mb-2">Enterprise</h3>
+                  <p className="text-gray-600 mb-4">For large organizations</p>
+                  <p className="text-4xl font-bold mb-6">Custom</p>
+                  <ul className="mb-6 text-gray-600 space-y-3">
+                    <li className="flex items-center">
+                      <span className="mr-2">•</span>
+                      Custom integrations
+                    </li>
+                    <li className="flex items-center">
+                      <span className="mr-2">•</span>
+                      Dedicated support
+                    </li>
+                    <li className="flex items-center">
+                      <span className="mr-2">•</span>
+                      On-premise options
+                    </li>
+                    <li className="flex items-center">
+                      <span className="mr-2">•</span>
+                      Advanced security
+                    </li>
+                  </ul>
+                  <div 
+                    className="block text-center bg-gray-400 text-white px-6 py-3 rounded-lg
+                      cursor-not-allowed"
+                  >
+                    Contact Sales
+                  </div>
+                </div>
               </div>
             </div>
           </div>
