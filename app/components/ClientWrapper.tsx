@@ -2,9 +2,10 @@
 
 import { useSession } from "next-auth/react"
 import { ReactNode } from "react"
+import { Session } from "next-auth"
 
 interface ClientWrapperProps {
-  children: ReactNode
+  children: ReactNode | ((session: Session | null) => ReactNode)
 }
 
 export default function ClientWrapper({ children }: ClientWrapperProps) {
@@ -12,7 +13,9 @@ export default function ClientWrapper({ children }: ClientWrapperProps) {
 
   return (
     <>
-      {typeof children === 'function' ? children(session) : children}
+      {typeof children === 'function' 
+        ? (children as (session: Session | null) => ReactNode)(session) 
+        : children}
     </>
   )
 }

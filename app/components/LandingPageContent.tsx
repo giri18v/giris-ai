@@ -13,7 +13,7 @@ export default function LandingPageContent() {
       <header className="px-4 lg:px-6 h-14 flex items-center">
         <Link className="flex items-center justify-center" href="#">
           <Github className="h-6 w-6 mr-2" />
-          <span className="font-bold">GULLA GIRI'S AI</span>
+          <span className="font-bold">GULLA GIRI&apos;S AI</span>
         </Link>
         <nav className="ml-auto flex gap-4 sm:gap-6">
           <Link className="text-sm font-medium hover:underline underline-offset-4" href="#features">
@@ -42,7 +42,7 @@ export default function LandingPageContent() {
 
       <main className="flex-grow">
         <section className="text-center py-20">
-          <h1 className="text-4xl font-bold mb-4">GULLA GIRI'S AI Github Analyser</h1>
+          <h1 className="text-4xl font-bold mb-4">GULLA GIRI&apos;S AI Github Analyser</h1>
           <p className="text-xl mb-8">
             Get powerful insights into your open source repositories with our AI-powered analysis tool.
           </p>
@@ -130,7 +130,7 @@ export default function LandingPageContent() {
       </main>
 
       <footer className="bg-gray-100 py-6 text-center">
-        <p>&copy; 2023 GULLA GIRI'S AI. All rights reserved.</p>
+        <p>&copy; 2023 GULLA GIRI&apos;S AI. All rights reserved.</p>
       </footer>
     </div>
   )
