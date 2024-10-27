@@ -1,17 +1,23 @@
-import NextAuth from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
-import { supabase } from "@/lib/supabaseClient";
+import NextAuth from "next-auth"
+import GoogleProvider from "next-auth/providers/google"
+import GithubProvider from "next-auth/providers/github"
+import { AuthOptions, Session } from "next-auth"
+import { supabase } from "@/lib/supabaseClient"
 
-export const authOptions = {
+const authOptions: AuthOptions = {
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    }),
+    GithubProvider({
+      clientId: process.env.GITHUB_ID as string,
+      clientSecret: process.env.GITHUB_SECRET as string,
     }),
   ],
   callbacks: {
     async signIn({ user, account, profile }) {
-      if (account.provider === "google") {
+      if (account?.provider === "google") {
         const { data, error } = await supabase
           .from('users')
           .select('id')
@@ -24,8 +30,7 @@ export const authOptions = {
         }
 
         if (!data) {
-          // User doesn't exist, so add them to the database
-          const { data: newUser, error: insertError } = await supabase
+          const { error: insertError } = await supabase
             .from('users')
             .insert({
               email: user.email,
@@ -45,30 +50,37 @@ export const authOptions = {
       return true
     },
     async session({ session, token }) {
-      // Add user ID to the session
-      if (session?.user) {
-        const { data, error } = await supabase
+      if (session?.user && token) {
+        const { data } = await supabase
           .from('users')
           .select('id')
           .eq('email', session.user.email)
           .single()
 
         if (data) {
-          session.user.id = data.id
+          return {
+            ...session,
+            user: {
+              ...session.user,
+              id: data.id as string
+            }
+          }
         }
       }
       return session
     },
-    async jwt({ token, user, account, profile, isNewUser }) {
-      return token;
-    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id
+      }
+      return token
+    }
   },
   pages: {
     signIn: "/auth/signin",
   },
   secret: process.env.NEXTAUTH_SECRET,
-};
+}
 
-const handler = NextAuth(authOptions);
-
-export { handler as GET, handler as POST };
+const handler = NextAuth(authOptions)
+export { handler as GET, handler as POST }
