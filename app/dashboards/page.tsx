@@ -3,17 +3,27 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { supabase } from '../../lib/supabaseClient'
 import CreateKeyModal from '../components/CreateKeyModal'
 import EditKeyModal from '../components/EditKeyModal'
 import DeleteKeyModal from '../components/DeleteKeyModal'
 import Notification from '../components/Notification'
 import Layout from '../components/Layout'
 
+interface ApiKey {
+  id: string
+  name: string
+  key: string
+  usage: number
+  user_id: string
+  created_at: string
+  limit_usage?: number
+  usage_limit?: number
+}
+
 const Overview = () => {
   const { data: session, status } = useSession()
   const router = useRouter()
-  const [apiKeys, setApiKeys] = useState([])
+  const [apiKeys, setApiKeys] = useState<ApiKey[]>([])
   const [currentPlan, setCurrentPlan] = useState({
     name: 'Gulla Giri',
     apiLimit: 1000,
@@ -31,7 +41,7 @@ const Overview = () => {
 
   useEffect(() => {
     if (status === 'unauthenticated') {
-      router.push('/api/auth/signin')
+      router.push('/auth/signin')
     } else if (status === 'authenticated') {
       fetchApiKeys()
       fetchCurrentPlan()
@@ -42,10 +52,17 @@ const Overview = () => {
     setIsLoading(true)
     setError(null)
     try {
-      const { data, error } = await supabase
-        .from('api_keys')
-        .select('*')
-      if (error) throw error
+      const response = await fetch('/api/collections', {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch API keys')
+      }
+      
+      const data = await response.json()
       setApiKeys(data)
     } catch (error) {
       console.error('Error fetching API keys:', error)
@@ -57,7 +74,6 @@ const Overview = () => {
 
   const fetchCurrentPlan = async () => {
     // In a real application, you would fetch this from your backend
-    // For now, we'll just use the default values
     setCurrentPlan({
       name: 'Gulla Giri',
       apiLimit: 1000,
@@ -67,23 +83,27 @@ const Overview = () => {
 
   const handleCreateKey = async (newKey) => {
     try {
-      const { data, error } = await supabase
-        .from('api_keys')
-        .insert([
-          { 
-            name: newKey.name, 
-            key: `tvly-${Math.random().toString(36).substr(2, 9)}`,
-            usage: 0,
-            limit_usage: newKey.limitUsage,
-            usage_limit: newKey.usageLimit
-          }
-        ])
-        .select()
-      if (error) throw error
-      
-      console.log('New key created:', data[0]); // Add this line for debugging
-      
-      setApiKeys(prevKeys => [...prevKeys, data[0]]);
+      const response = await fetch('/api/collections', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: newKey.name,
+          key: `tvly-${Math.random().toString(36).substr(2, 9)}`,
+          usage: 0,
+          limit_usage: parseInt(newKey.limitUsage) || 0,  // Ensure integer
+          usage_limit: parseInt(newKey.usageLimit) || 0   // Ensure integer
+        })
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to create API key')
+      }
+
+      const data = await response.json()
+      setApiKeys(prevKeys => [...prevKeys, data])
       setNotification("New API key created successfully")
     } catch (error) {
       console.error('Error creating new API key:', error)
@@ -95,17 +115,24 @@ const Overview = () => {
 
   const handleEditKey = async (id, updatedKey) => {
     try {
-      const { data, error } = await supabase
-        .from('api_keys')
-        .update({ 
-          name: updatedKey.name, 
-          limit_usage: updatedKey.limitUsage, 
-          usage_limit: updatedKey.usageLimit 
+      const response = await fetch(`/api/collections/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: updatedKey.name,
+          limit_usage: updatedKey.limitUsage,
+          usage_limit: updatedKey.usageLimit
         })
-        .eq('id', id)
-        .select()
-      if (error) throw error
-      setApiKeys(apiKeys.map(key => key.id === id ? data[0] : key))
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to update API key')
+      }
+
+      const data = await response.json()
+      setApiKeys(apiKeys.map(key => key.id === id ? data : key))
       setNotification("API key updated successfully")
     } catch (error) {
       console.error('Error updating API key:', error)
@@ -118,11 +145,17 @@ const Overview = () => {
 
   const handleDeleteKey = async (id) => {
     try {
-      const { error } = await supabase
-        .from('api_keys')
-        .delete()
-        .eq('id', id)
-      if (error) throw error
+      const response = await fetch(`/api/collections/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to delete API key')
+      }
+
       setApiKeys(apiKeys.filter(key => key.id !== id))
       setNotification("API key deleted successfully")
     } catch (error) {
@@ -134,27 +167,15 @@ const Overview = () => {
     }
   }
 
-  const handleCopyKey = (key) => {
+  const handleCopyKey = (key: string) => {
     navigator.clipboard.writeText(key).then(() => {
       setCopiedKey(key)
-      setNotification("Copied API Key to clipboard")
-      setTimeout(() => setCopiedKey(null), 3000) // Reset after 3 seconds
+      setNotification("API key copied to clipboard")
+      setTimeout(() => setCopiedKey(null), 3000)
     }).catch(err => {
-      console.error('Failed to copy: ', err)
-      setNotification("Failed to copy API Key")
+      console.error('Failed to copy:', err)
+      setNotification("Failed to copy API key")
     })
-  }
-
-  if (status === 'loading') {
-    return <Layout><div className="flex items-center justify-center h-screen">Loading...</div></Layout>
-  }
-
-  if (!session) {
-    return null
-  }
-
-  if (error) {
-    return <Layout><div className="flex items-center justify-center h-screen text-red-500">Error: {error}</div></Layout>
   }
 
   return (
@@ -207,59 +228,15 @@ const Overview = () => {
             </button>
           </div>
           
-          {/* Mobile View: Cards */}
-          <div className="block sm:hidden space-y-4">
-            {apiKeys.map((key) => (
-              <div key={key.id} className="border rounded-lg p-4">
-                <div className="flex justify-between items-start mb-3">
-                  <div>
-                    <h4 className="font-medium">{key.name}</h4>
-                    <p className="text-sm text-gray-500">Usage: {key.usage}</p>
-                  </div>
-                  <div className="flex space-x-2">
-                    <button 
-                      onClick={() => handleCopyKey(key.key)} 
-                      className={`p-2 rounded-lg hover:bg-gray-100 ${copiedKey === key.key ? 'text-green-500' : 'text-gray-600'}`}
-                      aria-label="Copy"
-                    >
-                      {copiedKey === key.key ? '✅' : '📋'}
-                    </button>
-                    <button 
-                      onClick={() => {
-                        setEditingKey(key)
-                        setIsEditModalOpen(true)
-                      }} 
-                      className="p-2 rounded-lg hover:bg-gray-100 text-gray-600"
-                      aria-label="Edit"
-                    >
-                      ✏️
-                    </button>
-                    <button 
-                      onClick={() => {
-                        setDeletingKey(key)
-                        setIsDeleteModalOpen(true)
-                      }} 
-                      className="p-2 rounded-lg hover:bg-gray-100 text-gray-600"
-                      aria-label="Delete"
-                    >
-                      🗑️
-                    </button>
-                  </div>
-                </div>
-                <p className="text-sm font-mono bg-gray-50 p-2 rounded break-all">{key.key}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Desktop View: Table */}
-          <div className="hidden sm:block overflow-x-auto">
+          {/* API Keys Table */}
+          <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="text-left text-gray-500 text-sm">
                   <th className="pb-2 pr-4">NAME</th>
                   <th className="pb-2 pr-4">USAGE</th>
                   <th className="pb-2 pr-4">KEY</th>
-                  <th className="pb-2">OPTIONS</th>
+                  <th className="pb-2">ACTIONS</th>
                 </tr>
               </thead>
               <tbody>
@@ -271,9 +248,8 @@ const Overview = () => {
                     <td className="py-4">
                       <div className="flex space-x-2">
                         <button 
-                          onClick={() => handleCopyKey(key.key)} 
+                          onClick={() => handleCopyKey(key.key)}
                           className={`p-2 rounded-lg hover:bg-gray-100 ${copiedKey === key.key ? 'text-green-500' : 'text-gray-600'}`}
-                          aria-label="Copy"
                         >
                           {copiedKey === key.key ? '✅' : '📋'}
                         </button>
@@ -281,9 +257,8 @@ const Overview = () => {
                           onClick={() => {
                             setEditingKey(key)
                             setIsEditModalOpen(true)
-                          }} 
+                          }}
                           className="p-2 rounded-lg hover:bg-gray-100 text-gray-600"
-                          aria-label="Edit"
                         >
                           ✏️
                         </button>
@@ -291,9 +266,8 @@ const Overview = () => {
                           onClick={() => {
                             setDeletingKey(key)
                             setIsDeleteModalOpen(true)
-                          }} 
+                          }}
                           className="p-2 rounded-lg hover:bg-gray-100 text-gray-600"
-                          aria-label="Delete"
                         >
                           🗑️
                         </button>
@@ -304,17 +278,6 @@ const Overview = () => {
               </tbody>
             </table>
           </div>
-        </div>
-
-        {/* Contact Us Section */}
-        <div className="text-center mt-8 space-y-4">
-          <p className="text-sm sm:text-base text-gray-600">
-            Have any questions, feedback or need support? We&apos;d love to hear from you!
-          </p>
-          <button className="w-full sm:w-auto bg-purple-500 text-white px-6 py-3 rounded-lg hover:bg-purple-600 
-            transition-colors duration-200">
-            Contact us
-          </button>
         </div>
 
         {/* Modals */}
